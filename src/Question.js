@@ -27,123 +27,126 @@ import { v4 as uuidv4 } from "uuid";
 import NetInfo from "@react-native-community/netinfo";
 import { firebase } from "../firebase/config";
 
-const data = {
-  id: 11,
-  name: "2016/2017 Junior Secondary Education School Census",
-  survey: [
-    {
-      id: 1,
-      section: "School Identification",
-      data: [
-        {
-          question: "How many students\\pupils board at the school premises",
-          type: "single-select",
-          hint: "School Name",
-          required: true,
-          options: ["Male", "Female"],
-          id: 2,
-        },
-        {
-          question: "Number and Street Nane",
-          type: "text",
-          hint: "Street Name",
-          id: 3,
-        },
-        {
-          question: "Ward",
-          type: "text",
-          hint: "ward",
-          id: 4,
-        },
-        {
-          question: "Village or Town",
-          type: "number",
-          id: 5,
-        },
-        {
-          question: "School Coordinate",
-          type: "coordinate",
-          id: 6,
-        },
-        {
-          question: "Email Address",
-          type: "email",
-          id: 7,
-        },
-        {
-          question: "Ownership",
-          type: "single-select",
-          id: 8,
-          options: ["Federal", "State", "LGA", "Community"],
-        },
-        {
-          question: "Did the school prepare SDP in the last school year",
-          type: "boolean",
-          id: 9,
-        },
-      ],
-    },
-    {
-      id: 2,
-      section: "School Charachteristics",
-      data: [
-        {
-          question: "School Name",
-          type: "text",
-          hint: "School Name",
-          required: true,
-          id: 2,
-        },
-        {
-          question: "Number and Street Nane",
-          type: "text",
-          hint: "Street Name",
-          id: 3,
-        },
-        {
-          question: "Ward",
-          type: "text",
-          hint: "ward",
-          id: 4,
-        },
-        {
-          question: "Village or Town",
-          type: "number",
-          id: 5,
-        },
-        {
-          question: "School Coordinate",
-          type: "coordinate",
-          id: 6,
-        },
-        {
-          question: "Email Address",
-          type: "email",
-          id: 7,
-        },
-        {
-          question: "Ownership",
-          type: "single-select",
-          id: 8,
-          options: ["Federal", "State", "LGA", "Community"],
-        },
-        {
-          question: "Did the school prepare SDP in the last school year",
-          type: "boolean",
-          id: 9,
-        },
-      ],
-    },
-  ],
-};
+// const data = {
+//   id: 11,
+//   name: "2016/2017 Junior Secondary Education School Census",
+//   survey: [
+//     {
+//       id: 1,
+//       section: "School Identification",
+//       data: [
+//         {
+//           question: "How many students\\pupils board at the school premises",
+//           type: "single-select",
+//           hint: "School Name",
+//           required: true,
+//           options: ["Male", "Female"],
+//           id: 2,
+//         },
+//         {
+//           question: "Number and Street Nane",
+//           type: "text",
+//           hint: "Street Name",
+//           id: 3,
+//         },
+//         {
+//           question: "Ward",
+//           type: "text",
+//           hint: "ward",
+//           id: 4,
+//         },
+//         {
+//           question: "Village or Town",
+//           type: "number",
+//           id: 5,
+//         },
+//         {
+//           question: "School Coordinate",
+//           type: "coordinate",
+//           id: 6,
+//         },
+//         {
+//           question: "Email Address",
+//           type: "email",
+//           id: 7,
+//         },
+//         {
+//           question: "Ownership",
+//           type: "single-select",
+//           id: 8,
+//           options: ["Federal", "State", "LGA", "Community"],
+//         },
+//         {
+//           question: "Did the school prepare SDP in the last school year",
+//           type: "boolean",
+//           id: 9,
+//         },
+//       ],
+//     },
+//     {
+//       id: 2,
+//       section: "School Charachteristics",
+//       data: [
+//         {
+//           question: "School Name",
+//           type: "text",
+//           hint: "School Name",
+//           required: true,
+//           id: 2,
+//         },
+//         {
+//           question: "Number and Street Nane",
+//           type: "text",
+//           hint: "Street Name",
+//           id: 3,
+//         },
+//         {
+//           question: "Ward",
+//           type: "text",
+//           hint: "ward",
+//           id: 4,
+//         },
+//         {
+//           question: "Village or Town",
+//           type: "number",
+//           id: 5,
+//         },
+//         {
+//           question: "School Coordinate",
+//           type: "coordinate",
+//           id: 6,
+//         },
+//         {
+//           question: "Email Address",
+//           type: "email",
+//           id: 7,
+//         },
+//         {
+//           question: "Ownership",
+//           type: "single-select",
+//           id: 8,
+//           options: ["Federal", "State", "LGA", "Community"],
+//         },
+//         {
+//           question: "Did the school prepare SDP in the last school year",
+//           type: "boolean",
+//           id: 9,
+//         },
+//       ],
+//     },
+//   ],
+// };
 
-const Question = () => {
+const Question = ({ route }) => {
+  const [data, setData] = useState({});
   const db = firebase.firestore();
   const [location, setLocation] = useState(null);
   const [response, setResponse] = useState({});
   const [errMsg, setErrorMsg] = useState();
   const [validate, setValidate] = useState({});
-
+  useEffect(() => {
+    setData(route.params.data);
+  }, [route]);
   const submitRecord = () => {
     const validaStatus = {};
 
@@ -198,6 +201,7 @@ const Question = () => {
           text: "OK",
           onPress: async () => {
             data.responseId = uuidv4();
+            data.createdAt = new Date();
             const networkState = await NetInfo.fetch();
             if (networkState.isConnected) {
               try {
@@ -416,7 +420,7 @@ const Question = () => {
             />
           </View>
         );
-      case "coordinate":
+      case "coordinates":
         return (
           <View style={styles.coordinateContainer}>
             <TextInput
@@ -503,31 +507,30 @@ const Question = () => {
     return (
       <View>
         <ListItem itemDivider>
-          <Text style={{ fontWeight: "bold", fontSize: 17 }}>
-            {item.section}
-          </Text>
+          <Text style={{ fontWeight: "bold", fontSize: 17 }}>{item.name}</Text>
         </ListItem>
-        {item.data.map((ele) => (
-          <View key={ele.id}>
-            <Card>
-              <CardItem>
-                <Body>
-                  <View style={{ flexDirection: "row" }}>
-                    <Text style={styles.question}>{ele.question}</Text>
-                    {ele.required ? (
-                      <Text
-                        style={{ color: "red", fontSize: 18, marginLeft: 2 }}
-                      >
-                        *
-                      </Text>
-                    ) : null}
-                  </View>
-                  {renderInput(item.id, ele)}
-                </Body>
-              </CardItem>
-            </Card>
-          </View>
-        ))}
+        {item.data &&
+          item.data.map((ele) => (
+            <View key={ele.id}>
+              <Card>
+                <CardItem>
+                  <Body>
+                    <View style={{ flexDirection: "row" }}>
+                      <Text style={styles.question}>{ele.question}</Text>
+                      {ele.required ? (
+                        <Text
+                          style={{ color: "red", fontSize: 18, marginLeft: 2 }}
+                        >
+                          *
+                        </Text>
+                      ) : null}
+                    </View>
+                    {renderInput(item.id, ele)}
+                  </Body>
+                </CardItem>
+              </Card>
+            </View>
+          ))}
         {/* <FlatList
           data={item.data}
           renderItem={(data) => renderItem(item.id, data)}

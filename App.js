@@ -19,7 +19,7 @@ export default function App() {
         <Stack.Screen
           name="Question"
           options={({ route }) => ({
-            title: route.params.name,
+            title: route.params.data.name,
           })}
           component={Question}
         />

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "asc-app",
-    "slug": "asc-app",
+    "name": "Annual School Census",
+    "slug": "annual-school-census",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,6 +21,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "description": "Annual School Census Mobile App",
+    "githubUrl": "https://github.com/charlesinto/annual-school-census-mobile",
+    "android": {
+      "package": "com.charlesinto.annualschoolcensus"
     }
   }
 }
