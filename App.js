@@ -40,7 +40,7 @@ export default function App() {
           name="Student Registration"
           component={StudentRegistration}
         />
-        <Stack.Screen name="Class Registration" component={ClassRegistration} />
+        <Stack.Screen name="Class Attendance" component={ClassRegistration} />
       </Stack.Navigator>
     </NavigationContainer>
   );

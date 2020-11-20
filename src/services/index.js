@@ -1,5 +1,9 @@
 import { Alert } from "react-native";
+import { firebase } from "../firebase/config";
+import Axios from "../axios";
+import * as SQLite from "expo-sqlite";
 
+const db = SQLite.openDatabase("db.db");
 class App {
   locations = [
     {
@@ -1037,6 +1041,8 @@ class App {
     },
   ];
 
+  db = firebase.firestore();
+
   getStates() {
     const states = [];
 
@@ -1086,6 +1092,210 @@ class App {
         onPress: cancelCallback ? cancelCallback : () => {},
       },
     ]);
+  }
+  async getSchools() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await Axios.get("/api/v1/school");
+
+        const schoolCollect = response.data.response;
+        const schools = [];
+        schoolCollect.forEach((doc) => {
+          schools.push({
+            id: doc.id,
+            schoolName: doc.schoolname,
+            state: doc.state,
+            lga: doc.lga,
+          });
+        });
+        console.log("schoools: ", schools);
+        resolve(schools);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+  getStudents() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await Axios.get("/api/v1/student");
+        const studentCollect = response.data.response;
+        const students = [];
+        studentCollect.forEach((doc) => {
+          students.push({
+            id: doc.id,
+            studentName: `${doc.othernames} ${doc.surname}`,
+            school: doc.school,
+            studentClass: doc.studentclass,
+          });
+        });
+        console.log(students);
+        resolve(students);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+  createSchool(params = {}) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        console.log("called");
+        await Axios.post("/api/v1/school/create-school", params);
+        console.log(params);
+        resolve(null);
+      } catch (error) {
+        console.log("error is: ", error);
+        reject(error);
+      }
+    });
+  }
+  createTeacher(params = {}) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        console.log("called");
+        await Axios.post("/api/v1/teacher/create-teacher", params);
+        resolve(null);
+      } catch (error) {
+        console.log("error is: ", error);
+        reject(error);
+      }
+    });
+  }
+  createStudent(params = {}) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        console.log("called");
+        await Axios.post("/api/v1/student/create-student", params);
+        resolve(null);
+      } catch (error) {
+        console.log("error is: ", error);
+        reject(error);
+      }
+    });
+  }
+  markAttendance(studentData, status) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await Axios.post("/api/v1/attendance/take-student-attendace", {
+          status,
+          studentId: studentData.id,
+          day: [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednessday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+          ][new Date().getDay()],
+          date: new Date().toLocaleDateString(),
+        });
+
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+  setUpApp() {
+    db.transaction((tx) => {
+      tx.executeSql(
+        `
+      CREATE TABLE IF NOT EXISTS schools
+      (
+          dateofestablishment date,
+          district varchar(200),
+          gendercategory varchar(200) ,
+          id integer PRIMARY KEY AUTOINCREMENT,
+          lga varchar(200),
+          mailingaddress varchar(200),
+          owner varchar(200),
+          schoolname varchar(200),
+          schoolnumber varchar(200),
+          state varchar(200),
+          telephonenumber varchar(200),
+          typeofschool varchar(200),
+          address varchar(200),
+          dateupdated timestamp without time zone,
+          principal varchar(200)(100),
+          datecreated timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+           
+      );
+      CREATE TABLE students
+(
+    medicalcondition VARCHAR(200),
+    guardianaddress VARCHAR(200),
+    motherfullname VARCHAR(200),
+    fatherfullname VARCHAR(200),
+    fathertelephone VARCHAR(200),
+    address VARCHAR(200),
+    school VARCHAR(200),
+    schoolid integer,
+    admissionnumber VARCHAR(200),
+    hobby VARCHAR(200),
+    id integer AUTOINCREMENT,
+    dateofadmission date,
+    dateofbirth date,
+    religion VARCHAR(200),
+    town VARCHAR(200),
+    gender VARCHAR(200),
+    othernames VARCHAR(200),
+    surname VARCHAR(200),
+    registrationnumber VARCHAR(200),
+    studentclass VARCHAR(200),
+    newentrant integer DEFAULT 0,
+    datecreated timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    dateupdated timestamp without time zone,
+    motheroccupation VARCHAR(200),
+    fatheroccupation VARCHAR(200),
+    CONSTRAINT students_pkey PRIMARY KEY (id),
+    CONSTRAINT students_schoolid_fkey FOREIGN KEY (schoolid)
+        REFERENCES schools (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+      );
+      CREATE TABLE teachers
+(
+    remarks VARCHAR(200),
+    exitdate date,
+    email VARCHAR(200),
+    residentnumber VARCHAR(200),
+    pfanumber VARCHAR(200),
+    telephonenumber VARCHAR(200),
+    homeaddress VARCHAR(200),
+    school VARCHAR(200),
+    schoolid integer NOT NULL,
+    id integer NOT NULL AUTOINCREMENT,
+    dateofpromotion date,
+    dateofconfirmation date,
+    dateofinterstatetravle date,
+    dateoffirstappointment date,
+    dateofbirth date,
+    qualification VARCHAR(200),
+    gradelevel VARCHAR(200),
+    designation VARCHAR(200),
+    maidenname VARCHAR(200),
+    gender VARCHAR(200),
+    othernames VARCHAR(200),
+    surname VARCHAR(200),
+    registrationnumber VARCHAR(200),
+    oraclenumber VARCHAR(200),
+    state VARCHAR(200),
+    datecreated timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    dateupdated timestamp without time zone,
+    dateofinterstatetravel date,
+    schoolname VARCHAR(200),
+    CONSTRAINT teachers_pkey PRIMARY KEY (id),
+    CONSTRAINT teachers_schoolid_fkey FOREIGN KEY (schoolid)
+        REFERENCES schools (id)
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+);
+      `,
+        [],
+        (_, { rows: { _array } }) => {}
+      );
+    });
   }
 }
 

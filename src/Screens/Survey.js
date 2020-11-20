@@ -40,7 +40,7 @@ const Survey = ({ navigation }) => {
                 }}
               />
               <MButton
-                title="Take Survey"
+                title="Proceed"
                 onPress={() => {
                   console.log(item.survey);
                   if (item.survey) {
@@ -74,7 +74,7 @@ const Survey = ({ navigation }) => {
                   onPress={() => {}}
                 />
                 <MButton
-                  title="Take Survey"
+                  title="Proceed"
                   onPress={() => {
                     navigation.navigate("School Registration");
                   }}
@@ -96,7 +96,7 @@ const Survey = ({ navigation }) => {
                   onPress={() => {}}
                 />
                 <MButton
-                  title="Take Survey"
+                  title="Proceed"
                   onPress={() => navigation.navigate("Teacher Registration")}
                 />
               </View>
@@ -116,7 +116,7 @@ const Survey = ({ navigation }) => {
                   onPress={() => {}}
                 />
                 <MButton
-                  title="Take Survey"
+                  title="Proceed"
                   onPress={() => navigation.navigate("Student Registration")}
                 />
               </View>
@@ -136,8 +136,8 @@ const Survey = ({ navigation }) => {
                   onPress={() => {}}
                 />
                 <MButton
-                  title="Take Survey"
-                  onPress={() => navigation.navigate("Class Registration")}
+                  title="Proceed"
+                  onPress={() => navigation.navigate("Class Attendance")}
                 />
               </View>
             </Body>
