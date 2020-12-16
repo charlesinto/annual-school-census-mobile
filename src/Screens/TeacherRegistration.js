@@ -292,7 +292,7 @@ const TeacherRegistration = () => {
             <CardItem>
               <Body>
                 <View style={{ flexDirection: "row" }}>
-                  <Text style={styles.question}>Desgination</Text>
+                  <Text style={styles.question}>Designation</Text>
                 </View>
                 <View style={styles.inputWrapper}>
                   <TextInput

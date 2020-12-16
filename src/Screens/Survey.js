@@ -1,63 +1,32 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Button as MButton, ScrollView } from "react-native";
-import { Card, CardItem, Body, Text, Button } from "native-base";
-import { firebase } from "../firebase/config";
-const Survey = ({ navigation }) => {
-  const [survey, setSurvey] = useState([]);
+import React, { useCallback } from "react";
+import {
+  View,
+  StyleSheet,
+  Button as MButton,
+  ScrollView,
+  BackHandler,
+} from "react-native";
+import { Card, CardItem, Body, Text } from "native-base";
 
-  const db = firebase.firestore();
-  useEffect(() => {
-    db.collection("projects").onSnapshot((doc) => {
-      if (!doc.empty) {
-        const data = [];
-        doc.forEach((doc) => {
-          data.push({
-            id: doc.id,
-            ...doc.data(),
-          });
-        });
-        setSurvey((state) => [...data]);
-      }
-    });
-  }, []);
-  const renderItem = ({ item }) => {
-    return (
-      <Card>
-        <CardItem>
-          <Body>
-            <View>
-              <Text>{item.name}</Text>
-            </View>
-            <View style={styles.actionContainer}>
-              <MButton
-                title="View Submission"
-                color="red"
-                onPress={() => {
-                  navigation.navigate("Submission", {
-                    id: item.id,
-                    data: item,
-                  });
-                }}
-              />
-              <MButton
-                title="Proceed"
-                onPress={() => {
-                  console.log(item.survey);
-                  if (item.survey) {
-                    navigation.navigate("Question", {
-                      name:
-                        "2016/2017 Junior Secondary Education School Census",
-                      data: item,
-                    });
-                  }
-                }}
-              />
-            </View>
-          </Body>
-        </CardItem>
-      </Card>
-    );
-  };
+import { useFocusEffect } from "@react-navigation/native";
+const Survey = ({ navigation }) => {
+  navigation.setOptions({
+    headerLeft: null,
+  });
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        return true;
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, [])
+  );
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -68,11 +37,11 @@ const Survey = ({ navigation }) => {
                 <Text>School Registration</Text>
               </View>
               <View style={styles.actionContainer}>
-                <MButton
+                {/* <MButton
                   title="View Submission"
                   color="red"
                   onPress={() => {}}
-                />
+                /> */}
                 <MButton
                   title="Proceed"
                   onPress={() => {
@@ -90,11 +59,11 @@ const Survey = ({ navigation }) => {
                 <Text>Teacher Registration</Text>
               </View>
               <View style={styles.actionContainer}>
-                <MButton
+                {/* <MButton
                   title="View Submission"
                   color="red"
                   onPress={() => {}}
-                />
+                /> */}
                 <MButton
                   title="Proceed"
                   onPress={() => navigation.navigate("Teacher Registration")}
@@ -110,11 +79,11 @@ const Survey = ({ navigation }) => {
                 <Text>Student Registration</Text>
               </View>
               <View style={styles.actionContainer}>
-                <MButton
+                {/* <MButton
                   title="View Submission"
                   color="red"
                   onPress={() => {}}
-                />
+                /> */}
                 <MButton
                   title="Proceed"
                   onPress={() => navigation.navigate("Student Registration")}
@@ -131,13 +100,23 @@ const Survey = ({ navigation }) => {
               </View>
               <View style={styles.actionContainer}>
                 <MButton
-                  title="View Submission"
-                  color="red"
-                  onPress={() => {}}
-                />
-                <MButton
                   title="Proceed"
                   onPress={() => navigation.navigate("Class Attendance")}
+                />
+              </View>
+            </Body>
+          </CardItem>
+        </Card>
+        <Card>
+          <CardItem>
+            <Body>
+              <View>
+                <Text>Facility Report</Text>
+              </View>
+              <View style={styles.actionContainer}>
+                <MButton
+                  title="Proceed"
+                  onPress={() => navigation.navigate("Facility Report")}
                 />
               </View>
             </Body>

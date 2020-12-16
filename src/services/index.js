@@ -1055,6 +1055,18 @@ class App {
     return states;
   }
 
+  getState(name = "") {
+    const states = [];
+
+    this.locations.forEach((location) => {
+      states.push({
+        name: location.state.name,
+        id: location.state.id,
+      });
+    });
+    return states.filter((item) => item.name === name);
+  }
+
   getLocalgovernments(name) {
     const lgas = [];
 
@@ -1131,6 +1143,18 @@ class App {
         });
         console.log(students);
         resolve(students);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+  registerUser(params) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await Axios.post("/api/v1/auth/activate-user", params);
+
+        console.log(response);
+        resolve(response);
       } catch (error) {
         reject(error);
       }

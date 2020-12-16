@@ -712,7 +712,7 @@ const StudentRegistration = () => {
                   <TextInput
                     onChangeText={(value) => setMotherAddress(value)}
                     style={styles.inputStyle}
-                    keyboardType="number-pad"
+                    keyboardType="default"
                     value={motherAddress}
                   />
                 </View>

@@ -432,7 +432,7 @@ function SchoolRegistration() {
                           <CheckBox
                             checked={religionLevel}
                             onPress={() => {
-                              setPrivate(true);
+                              setPrivate(false);
                               setStateLevel(false);
                               setFederal(false);
                               setReligionLevel(true);
@@ -467,7 +467,7 @@ function SchoolRegistration() {
 
                         <Picker.Item label="Private" value={"Private"} />
                         <Picker.Item
-                          label="Sepcial needs"
+                          label="Special needs"
                           value={"Special needs"}
                         />
                         <Picker.Item label="Nomadic" value={"Nomadic"} />
